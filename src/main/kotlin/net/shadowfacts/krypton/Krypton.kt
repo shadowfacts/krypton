@@ -20,7 +20,7 @@ class Krypton(val config: Configuration) {
 	private val pipelines = mutableListOf<Pipeline>()
 	private val echoPipeline = Pipeline(selector = object: PipelineSelector {
 		override fun select(metadata: Metadata, file: File) = false
-	}, final = FinalStageOutput(this))
+	}, final = FinalStageOutput())
 
 	init {
 		if (config.plugins.exists() && config.plugins.isDirectory) {
