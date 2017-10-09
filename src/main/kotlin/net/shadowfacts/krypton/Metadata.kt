@@ -10,7 +10,6 @@ data class Metadata(
 		val source: File
 ) {
 
-	val output: File
-		get() = krypton.config.getOutput(source)
+	var output = krypton.config.getOutput(source)
 
 }

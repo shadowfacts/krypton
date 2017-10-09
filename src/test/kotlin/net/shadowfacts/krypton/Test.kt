@@ -32,7 +32,7 @@ fun main(args: Array<String>) {
 //		}, Dependencies {
 //			after += arrayOf("ekt", "stripWhitespace")
 //		})
-		final = FinalStageOutput(krypton)
+		final = FinalStageOutput()
 	}
 	krypton.serve()
 }
