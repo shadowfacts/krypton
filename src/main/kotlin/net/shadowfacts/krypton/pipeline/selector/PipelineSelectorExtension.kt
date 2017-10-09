@@ -6,8 +6,8 @@ import java.io.File
 /**
  * @author shadowfacts
  */
-class PipelineSelectorExtension(private val extension: String): PipelineSelector {
+class PipelineSelectorExtension(private vararg val extensions: String): PipelineSelector {
 
-	override fun select(metadata: Metadata, file: File): Boolean = file.extension.equals(extension, ignoreCase = true)
+	override fun select(metadata: Metadata, file: File): Boolean = extensions.contains(file.extension.toLowerCase())
 
 }
