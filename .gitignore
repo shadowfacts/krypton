@@ -1,0 +1,17 @@
+.DS_Store
+
+# java
+*.class
+
+# gradle
+/build
+/.gradle
+
+# idea
+/classes
+/out
+/run
+/.idea
+*.iml
+*.ipr
+*.iws
