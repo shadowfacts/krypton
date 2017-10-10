@@ -18,6 +18,7 @@ dependencies {
 	compile group: "net.shadowfacts", name: "ekt", version: ekt_version
 
 	compile group: "org.nanohttpd", name: "nanohttpd", version: "2.3.1"
+	compile group: "org.yaml", name: "snakeyaml", version: "1.18"
 }
 
 compileKotlin {
