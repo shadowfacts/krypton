@@ -19,7 +19,7 @@ data class Page(
 	init {
 		val parts = input.split("---")
 		if (parts.size >= 2) {
-			input = parts.drop(1).joinToString("---")
+			input = parts.drop(2).joinToString("---")
 
 			val yaml = Yaml().load(parts[1])
 			if (System.getProperty("krypton.metadata.debugFrontMatter").toBoolean()) {

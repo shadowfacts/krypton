@@ -35,11 +35,12 @@ class Krypton(val config: Configuration) {
 	}
 
 	fun generate() {
-		config.source.walkTopDown().filter {
-			it.isFile
-		}.map {
+		val files = config.source.walkTopDown().filter(File::isFile)
+		files.forEach {
 			scan(it)
-		}.forEach { (page, pipeline) ->
+		}
+		files.forEach {
+			val (page, pipeline) = pages[it]!!
 			generate(page, pipeline)
 		}
 	}
