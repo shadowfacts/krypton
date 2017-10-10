@@ -17,6 +17,9 @@ class StageRenderEKT(
 
 	constructor(cacheDir: File?, includesDir: File?, init: EKT.DataProvider.() -> Unit): this(cacheDir, includesDir, EKT.DataProvider.init(init))
 
+	override fun scan(page: Page) {
+	}
+
 	override fun apply(page: Page, input: String): String {
 		val env = Environment(page, input, cacheDir, includesDir, data)
 		return EKT.render(env)

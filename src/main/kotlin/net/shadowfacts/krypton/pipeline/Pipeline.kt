@@ -13,7 +13,13 @@ class Pipeline(private val selector: PipelineSelector, private val stages: Mutab
 
 	fun matches(page: Page, file: File) = selector.select(page, file)
 
-	fun apply(page: Page) {
+	fun scan(page: Page) {
+		stages.forEach {
+			it.scan(page)
+		}
+	}
+
+	fun generate(page: Page) {
 		stages.forEach {
 			page.input = it.apply(page, page.input)
 		}

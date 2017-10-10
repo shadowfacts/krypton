@@ -16,7 +16,7 @@ fun main(args: Array<String>) {
 //		addStage(object: Stage() {
 //			override val id = "stripWhitespace"
 //
-//			override fun apply(metadata: Page, input: String) = input.filter { !it.isWhitespace() }
+//			override fun generate(metadata: Page, input: String) = input.filter { !it.isWhitespace() }
 //
 //		}, Dependencies {
 //			after += "ekt"
@@ -28,7 +28,7 @@ fun main(args: Array<String>) {
 		})
 //		addStage(object: Stage() {
 //			override val id = "test"
-//			override fun apply(metadata: Page, input: String) = input
+//			override fun generate(metadata: Page, input: String) = input
 //		}, Dependencies {
 //			after += arrayOf("ekt", "stripWhitespace")
 //		})

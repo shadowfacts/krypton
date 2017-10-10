@@ -21,6 +21,7 @@ class Krypton(val config: Configuration) {
 	private val echoPipeline = Pipeline(selector = object: PipelineSelector {
 		override fun select(page: Page, file: File) = false
 	}, final = FinalStageOutput())
+	private val pages = mutableMapOf<File, Pair<Page, Pipeline>>()
 
 	init {
 		if (config.plugins.exists() && config.plugins.isDirectory) {
@@ -34,7 +35,13 @@ class Krypton(val config: Configuration) {
 	}
 
 	fun generate() {
-		config.source.walkTopDown().filter(File::isFile).forEach(this::generate)
+		config.source.walkTopDown().filter {
+			it.isFile
+		}.map {
+			scan(it)
+		}.forEach { (page, pipeline) ->
+			generate(page, pipeline)
+		}
 	}
 
 	fun watch() {
@@ -55,9 +62,8 @@ class Krypton(val config: Configuration) {
 		registerAll(config.source)
 
 		while (true) {
-			val key: WatchKey
-			try {
-				key = watcher.take()
+			val key = try {
+				watcher.take()
 			} catch (e: InterruptedException) {
 				throw RuntimeException(e)
 			}
@@ -75,6 +81,10 @@ class Krypton(val config: Configuration) {
 				when (kind) {
 					StandardWatchEventKinds.ENTRY_CREATE -> {
 						if (child.isDirectory) registerAll(child)
+						else {
+							val (page, pipeline) = scan(child)
+							generate(page, pipeline)
+						}
 					}
 					StandardWatchEventKinds.ENTRY_DELETE -> {
 						val dest = config.getOutput(child)
@@ -82,7 +92,10 @@ class Krypton(val config: Configuration) {
 						else dest.delete()
 					}
 					StandardWatchEventKinds.ENTRY_MODIFY -> {
-						if (child.isFile) generate(child)
+						if (child.isFile) {
+							val (page, pipeline) = pages[child] ?: throw RuntimeException("")
+							generate(page, pipeline)
+						}
 					}
 				}
 			}
@@ -105,13 +118,21 @@ class Krypton(val config: Configuration) {
 		watch()
 	}
 
-	private fun generate(file: File) {
-		val metadata = Page(this, file)
-		getPipeline(metadata, file).apply(metadata)
+	private fun scan(file: File): Pair<Page, Pipeline> {
+		val page = Page(this, file)
+		val pipeline = getPipeline(page)
+		pipeline.scan(page)
+		val pair = page to pipeline
+		pages[file] = pair
+		return pair
 	}
 
-	private fun getPipeline(page: Page, file: File) = pipelines.firstOrNull {
-		it.matches(page, file)
+	private fun generate(page: Page, pipeline: Pipeline) {
+		pipeline.generate(page)
+	}
+
+	private fun getPipeline(page: Page) = pipelines.firstOrNull {
+		it.matches(page, page.source)
 	} ?: echoPipeline
 
 	fun createPipeline(init: PipelineBuilder.() -> Unit) {
