@@ -1,6 +1,6 @@
 package net.shadowfacts.krypton.pipeline.selector
 
-import net.shadowfacts.krypton.Metadata
+import net.shadowfacts.krypton.Page
 import java.io.File
 
 /**
@@ -8,6 +8,6 @@ import java.io.File
  */
 interface PipelineSelector {
 
-	fun select(metadata: Metadata, file: File): Boolean
+	fun select(page: Page, file: File): Boolean
 
 }

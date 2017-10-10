@@ -5,11 +5,12 @@ import java.io.File
 /**
  * @author shadowfacts
  */
-data class Metadata(
+data class Page(
 		val krypton: Krypton,
 		val source: File
 ) {
 
+	var input = source.readText(Charsets.UTF_8)
 	var output = krypton.config.getOutput(source)
 
 }

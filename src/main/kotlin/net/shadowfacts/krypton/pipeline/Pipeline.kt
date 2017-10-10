@@ -1,6 +1,6 @@
 package net.shadowfacts.krypton.pipeline
 
-import net.shadowfacts.krypton.Metadata
+import net.shadowfacts.krypton.Page
 import net.shadowfacts.krypton.pipeline.selector.PipelineSelector
 import net.shadowfacts.krypton.pipeline.stage.finalstage.FinalStage
 import net.shadowfacts.krypton.pipeline.stage.Stage
@@ -11,14 +11,13 @@ import java.io.File
  */
 class Pipeline(private val selector: PipelineSelector, private val stages: MutableList<Stage> = mutableListOf(), private val final: FinalStage? = null) {
 
-	fun matches(metdata: Metadata, file: File) = selector.select(metdata, file)
+	fun matches(page: Page, file: File) = selector.select(page, file)
 
-	fun apply(metadata: Metadata, file: File) {
-		var text = file.readText(Charsets.UTF_8)
+	fun apply(page: Page) {
 		stages.forEach {
-			text = it.apply(metadata, text)
+			page.input = it.apply(page, page.input)
 		}
-		final?.apply(metadata, text)
+		final?.apply(page, page.input)
 	}
 
 }

@@ -1,12 +1,12 @@
 package net.shadowfacts.krypton.pipeline.stage.finalstage
 
-import net.shadowfacts.krypton.Metadata
+import net.shadowfacts.krypton.Page
 
 /**
  * @author shadowfacts
  */
 interface FinalStage {
 
-	fun apply(metadata: Metadata, input: String)
+	fun apply(page: Page, input: String)
 
 }

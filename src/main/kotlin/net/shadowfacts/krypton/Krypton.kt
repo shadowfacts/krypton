@@ -19,7 +19,7 @@ class Krypton(val config: Configuration) {
 
 	private val pipelines = mutableListOf<Pipeline>()
 	private val echoPipeline = Pipeline(selector = object: PipelineSelector {
-		override fun select(metadata: Metadata, file: File) = false
+		override fun select(page: Page, file: File) = false
 	}, final = FinalStageOutput())
 
 	init {
@@ -106,12 +106,12 @@ class Krypton(val config: Configuration) {
 	}
 
 	private fun generate(file: File) {
-		val metadata = Metadata(this, file)
-		getPipeline(metadata, file).apply(metadata, file)
+		val metadata = Page(this, file)
+		getPipeline(metadata, file).apply(metadata)
 	}
 
-	private fun getPipeline(metadata: Metadata, file: File) = pipelines.firstOrNull {
-		it.matches(metadata, file)
+	private fun getPipeline(page: Page, file: File) = pipelines.firstOrNull {
+		it.matches(page, file)
 	} ?: echoPipeline
 
 	fun createPipeline(init: PipelineBuilder.() -> Unit) {
