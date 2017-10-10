@@ -14,13 +14,13 @@ class PipelineBuilder {
 
 	lateinit var selector: PipelineSelector
 	private val stages = mutableListOf<Stage>()
-	private val dependencies = mutableMapOf<Stage, MutableList<String>>()
+	private val dependencies = mutableMapOf<String, MutableList<String>>()
 	var final: FinalStage? = FinalStageOutput()
 
 	fun addStage(stage: Stage, dependencies: Dependencies<Stage>) {
 		stages += stage
-		getDepList(stage) += dependencies.after
-		dependencies.before.map(this::getStage).forEach {
+		getDepList(stage.id) += dependencies.before
+		dependencies.after.forEach {
 			getDepList(it) += stage.id
 		}
 	}
@@ -36,7 +36,7 @@ class PipelineBuilder {
 
 	private fun sortStages(): MutableList<Stage> {
 		val graph = TopologicalSort.Graph.from(stages, {
-			val strs = dependencies[it] ?: listOf<String>()
+			val strs = dependencies[it.id] ?: listOf<String>()
 			strs.map(this::getStage)
 		})
 		val sorted = TopologicalSort.sort(graph)
@@ -47,7 +47,7 @@ class PipelineBuilder {
 		return sorted.toMutableList()
 	}
 
-	private fun getDepList(stage: Stage): MutableList<String> {
+	private fun getDepList(stage: String): MutableList<String> {
 		return dependencies.getOrPut(stage, ::mutableListOf)
 	}
 
