@@ -1,7 +1,6 @@
 package net.shadowfacts.krypton
 
 import net.shadowfacts.krypton.pipeline.selector.PipelineSelectorExtension
-import net.shadowfacts.krypton.pipeline.stage.StageRenderEKT
 import net.shadowfacts.krypton.pipeline.stage.finalstage.FinalStageOutput
 import net.shadowfacts.krypton.util.dependencies.Dependencies
 import java.io.File
@@ -21,11 +20,11 @@ fun main(args: Array<String>) {
 //		}, Dependencies {
 //			after += "ekt"
 //		})
-		addStage(StageRenderEKT(null, null) {
-			"title" to "Blah"
-		}, Dependencies {
-
-		})
+//		addStage(StageRenderEKT(null, null) {
+//			"title" to "Blah"
+//		}, Dependencies {
+//
+//		})
 //		addStage(object: Stage() {
 //			override val id = "test"
 //			override fun generate(metadata: Page, input: String) = input
