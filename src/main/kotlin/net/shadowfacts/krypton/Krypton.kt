@@ -1,6 +1,7 @@
 package net.shadowfacts.krypton
 
 import fi.iki.elonen.NanoHTTPD
+import net.shadowfacts.krypton.config.Configuration
 import net.shadowfacts.krypton.pipeline.Pipeline
 import net.shadowfacts.krypton.pipeline.PipelineBuilder
 import net.shadowfacts.krypton.pipeline.selector.PipelineSelector
@@ -115,6 +116,7 @@ class Krypton(val config: Configuration) {
 	fun serve(port: Int = 8080) {
 		thread {
 			StaticServer(config.output, port).start(NanoHTTPD.SOCKET_READ_TIMEOUT, false)
+			println("Krypton server started on port $port")
 		}
 		watch()
 	}
