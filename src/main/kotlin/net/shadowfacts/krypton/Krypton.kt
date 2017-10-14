@@ -141,7 +141,11 @@ class Krypton(val config: Configuration) {
 	fun createPipeline(init: PipelineBuilder.() -> Unit) {
 		val builder = PipelineBuilder()
 		builder.init()
-		pipelines += builder.build()
+		addPipeline(builder.build())
+	}
+
+	fun addPipeline(pipeline: Pipeline) {
+		pipelines += pipeline
 	}
 
 }
