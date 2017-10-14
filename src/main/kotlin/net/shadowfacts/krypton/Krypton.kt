@@ -18,7 +18,8 @@ import kotlin.concurrent.thread
  */
 class Krypton(val config: Configuration) {
 
-	private val pipelines = mutableListOf<Pipeline>()
+	private var pipelines = listOf<Pipeline>()
+	private val pipelinePriorities = mutableMapOf<Pipeline, Int>()
 	private val echoPipeline = Pipeline(selector = object: PipelineSelector {
 		override fun select(page: Page, file: File) = false
 	}, final = FinalStageOutput())
@@ -141,11 +142,12 @@ class Krypton(val config: Configuration) {
 	fun createPipeline(init: PipelineBuilder.() -> Unit) {
 		val builder = PipelineBuilder()
 		builder.init()
-		addPipeline(builder.build())
+		addPipeline(builder.build(), builder.priority)
 	}
 
-	fun addPipeline(pipeline: Pipeline) {
-		pipelines += pipeline
+	fun addPipeline(pipeline: Pipeline, priority: Int) {
+		pipelinePriorities[pipeline] = priority
+		pipelines = pipelinePriorities.keys.sortedByDescending(pipelinePriorities::getValue)
 	}
 
 }

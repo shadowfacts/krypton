@@ -16,6 +16,7 @@ class PipelineBuilder {
 	private val stages = mutableListOf<Stage>()
 	private val dependencies = mutableMapOf<String, MutableList<String>>()
 	var final: FinalStage? = FinalStageOutput()
+	var priority = 0
 
 	fun addStage(stage: Stage, dependencies: Dependencies<Stage>) {
 		stages += stage
