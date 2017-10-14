@@ -9,7 +9,7 @@ import java.io.File
 /**
  * @author shadowfacts
  */
-class Pipeline(private val selector: PipelineSelector, private val stages: MutableList<Stage> = mutableListOf(), private val final: FinalStage? = null) {
+open class Pipeline(private val selector: PipelineSelector, private val stages: MutableList<Stage> = mutableListOf(), private val final: FinalStage? = null) {
 
 	fun matches(page: Page, file: File) = selector.select(page, file)
 
