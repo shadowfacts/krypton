@@ -115,10 +115,17 @@ class Krypton(val config: Configuration) {
 	}
 
 	fun serve(port: Int = 8080) {
+		val server = StaticServer(config.output, port)
+
 		thread {
-			StaticServer(config.output, port).start(NanoHTTPD.SOCKET_READ_TIMEOUT, false)
+			server.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false)
 			println("Krypton server started on port $port")
 		}
+
+		Runtime.getRuntime().addShutdownHook(Thread {
+			server.stop()
+		})
+
 		watch()
 	}
 
