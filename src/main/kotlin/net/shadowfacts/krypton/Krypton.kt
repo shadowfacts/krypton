@@ -154,6 +154,10 @@ class Krypton(val config: Configuration) {
 		it.matches(page, page.source)
 	} ?: echoPipeline
 
+	fun hasDefault(source: File, name: String): Boolean {
+		return source.parentFile in defaults && name in defaults.getValue(source.parentFile)
+	}
+
 	fun getDefault(source: File, name: String): Any? {
 		return defaults[source.parentFile]?.get(name)
 	}
