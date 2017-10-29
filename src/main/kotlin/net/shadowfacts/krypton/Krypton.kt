@@ -7,6 +7,7 @@ import net.shadowfacts.krypton.pipeline.PipelineBuilder
 import net.shadowfacts.krypton.pipeline.selector.PipelineSelector
 import net.shadowfacts.krypton.pipeline.stage.finalstage.FinalStageOutput
 import net.shadowfacts.krypton.util.StaticServer
+import net.shadowfacts.krypton.util.getParentsUpTo
 import org.yaml.snakeyaml.Yaml
 import java.io.File
 import java.net.URL
@@ -169,15 +170,26 @@ class Krypton {
 	} ?: echoPipeline
 
 	fun hasDefault(source: File, name: String): Boolean {
-		return source.parentFile in defaults && name in defaults.getValue(source.parentFile)
+		val parents = source.getParentsUpTo(config.source)
+		return parents.any { it in defaults && name in defaults.getValue(it) }
 	}
 
 	fun getDefault(source: File, name: String): Any? {
-		return defaults[source.parentFile]?.get(name)
+		val parents = source.getParentsUpTo(config.source)
+		return parents
+				.filter { it in defaults }
+				.map { defaults.getValue(it) }
+				.firstOrNull { name in it }
+				?.let { it[name] }
 	}
 
 	fun getDefaults(source: File): Map<String, Any> {
-		return defaults[source.parentFile] ?: mapOf()
+		val map = mutableMapOf<String, Any>()
+		val parents = source.getParentsUpTo(config.source)
+		parents.asReversed()
+				.filter { it in defaults }
+				.forEach { map.putAll(defaults.getValue(it)) }
+		return map
 	}
 
 	fun createPipeline(init: PipelineBuilder.() -> Unit) {
