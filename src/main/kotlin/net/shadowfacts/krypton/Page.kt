@@ -14,7 +14,7 @@ data class Page(
 	var input = source.readText(Charsets.UTF_8)
 	var output = krypton.config.getOutput(source)
 
-	val metadata = mutableMapOf<String, Any>()
+	private val metadata = mutableMapOf<String, Any>()
 
 	init {
 		val parts = input.split("---")
@@ -27,6 +27,14 @@ data class Page(
 			}
 			metadata.putAll(yaml as Map<String, Any>)
 		}
+	}
+
+	fun getMetadata(name: String): Any? {
+		return metadata[name] ?: krypton.getDefault(source, name)
+	}
+
+	fun setMetadata(name: String, value: Any) {
+		metadata[name] = value
 	}
 
 }

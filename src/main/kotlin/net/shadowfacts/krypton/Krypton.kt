@@ -7,6 +7,7 @@ import net.shadowfacts.krypton.pipeline.PipelineBuilder
 import net.shadowfacts.krypton.pipeline.selector.PipelineSelector
 import net.shadowfacts.krypton.pipeline.stage.finalstage.FinalStageOutput
 import net.shadowfacts.krypton.util.StaticServer
+import org.yaml.snakeyaml.Yaml
 import java.io.File
 import java.net.URL
 import java.net.URLClassLoader
@@ -24,6 +25,7 @@ class Krypton(val config: Configuration) {
 		override fun select(page: Page, file: File) = false
 	}, final = FinalStageOutput())
 	private val pages = mutableMapOf<File, Pair<Page, Pipeline>>()
+	private val defaults = mutableMapOf<File, Map<String, Any>>()
 
 	init {
 		if (config.plugins.exists() && config.plugins.isDirectory) {
@@ -38,10 +40,16 @@ class Krypton(val config: Configuration) {
 
 	fun generate() {
 		val files = config.source.walkTopDown().filter(File::isFile)
-		files.forEach {
+		val (defaultsFiles, pageFiles) = files.partition { it.name == "_defaults.yml" }
+
+		defaultsFiles.forEach {
+			defaults[it.parentFile] = Yaml().load(it.readText(Charsets.UTF_8)) as Map<String, Any>
+		}
+
+		pageFiles.forEach {
 			scan(it)
 		}
-		files.forEach {
+		pageFiles.forEach {
 			val (page, pipeline) = pages[it]!!
 			generate(page, pipeline)
 		}
@@ -145,6 +153,10 @@ class Krypton(val config: Configuration) {
 	private fun getPipeline(page: Page) = pipelines.firstOrNull {
 		it.matches(page, page.source)
 	} ?: echoPipeline
+
+	fun getDefault(source: File, name: String): Any? {
+		return defaults[source.parentFile]?.get(name)
+	}
 
 	fun createPipeline(init: PipelineBuilder.() -> Unit) {
 		val builder = PipelineBuilder()
