@@ -17,8 +17,9 @@ import kotlin.concurrent.thread
 /**
  * @author shadowfacts
  */
-class Krypton(val config: Configuration) {
+class Krypton {
 
+	lateinit var config: Configuration private set
 	private var pipelines = listOf<Pipeline>()
 	private val pipelinePriorities = mutableMapOf<Pipeline, Int>()
 	private val echoPipeline = Pipeline(selector = object: PipelineSelector {
@@ -27,7 +28,20 @@ class Krypton(val config: Configuration) {
 	private val pages = mutableMapOf<File, Pair<Page, Pipeline>>()
 	private val defaults = mutableMapOf<File, Map<String, Any>>()
 
-	init {
+	constructor(config: Configuration) {
+		this.config = config
+
+		loadPlugins()
+	}
+
+	constructor(init: Configuration.(Krypton) -> Unit) {
+		config = Configuration()
+		config.init(this)
+
+		loadPlugins()
+	}
+
+	private fun loadPlugins() {
 		if (config.plugins.exists() && config.plugins.isDirectory) {
 			val cl = ClassLoader.getSystemClassLoader() as URLClassLoader
 			val m = URLClassLoader::class.java.getDeclaredMethod("addURL", URL::class.java)
