@@ -176,6 +176,10 @@ class Krypton {
 		return defaults[source.parentFile]?.get(name)
 	}
 
+	fun getDefaults(source: File): Map<String, Any> {
+		return defaults[source.parentFile] ?: mapOf()
+	}
+
 	fun createPipeline(init: PipelineBuilder.() -> Unit) {
 		val builder = PipelineBuilder()
 		builder.init()

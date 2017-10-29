@@ -45,6 +45,13 @@ data class Page(
 			return name in metadata || page.krypton.hasDefault(page.source, name)
 		}
 
+		fun forEach(action: (String, Any) -> Unit) {
+			val merged = mutableMapOf<String, Any>()
+			merged.putAll(page.krypton.getDefaults(page.source))
+			merged.putAll(metadata)
+			merged.forEach(action)
+		}
+
 	}
 
 }
